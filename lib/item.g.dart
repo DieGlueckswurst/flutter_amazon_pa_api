@@ -15,6 +15,9 @@ Item _$ItemFromJson(Map<String, dynamic> json) => Item(
       json['ItemInfo'] == null
           ? null
           : ItemInfo.fromJson(json['ItemInfo'] as Map<String, dynamic>),
+      json['Offers'] == null
+          ? null
+          : Offers.fromJson(json['Offers'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
@@ -22,4 +25,5 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'DetailPageURL': instance.detailPageURL,
       'Images': instance.images,
       'ItemInfo': instance.itemInfo,
+      'Offers': instance.offers,
     };
