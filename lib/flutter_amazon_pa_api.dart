@@ -3,6 +3,9 @@ library flutter_amazon_pa_api;
 import 'dart:convert';
 
 import 'package:flutter_amazon_pa_api/get_items_response.dart';
+import 'package:flutter_amazon_pa_api/search_items_response.dart';
+import 'package:flutter_amazon_pa_api/paapi_operation.dart';
+import 'package:flutter_amazon_pa_api/paapi_marketplace.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'package:intl/intl.dart';
@@ -20,13 +23,14 @@ class PaAPI {
   /// Service name
   String service = 'ProductAdvertisingAPI';
 
-  /// Host default=JP
-  String host = 'webservices.amazon.co.jp';
+  /// Host
+  late String host;
 
-  /// Region default=JP
-  String region = 'us-west-2';
+  /// Region
+  late String region;
 
-  String marketplace = 'www.amazon.co.jp';
+  /// Markeptlace default=us
+  PaAPIMarketplace marketplace;
 
   /// API Request PATH
   late String path;
@@ -34,31 +38,48 @@ class PaAPI {
   /// Amazon associate tag
   late String partnerTag;
 
-  PaAPI({required this.accessKey, required this.secretKey});
+  PaAPI(
+      {required this.accessKey,
+      required this.secretKey,
+      required this.partnerTag,
+      this.marketplace = PaAPIMarketplace.us}) {
+    this.host = this.marketplace.host;
+    this.region = this.marketplace.region;
+  }
 
-  Future<GetItemsResponse> getItems(List<String> items) async {
+  Future<GetItemsResponse> getItems(
+      List<String> items, List<String> resources) async {
     final body = {
       "ItemIds": items,
-      "Resources": [
-        "BrowseNodeInfo.BrowseNodes",
-        "Images.Primary.Small",
-        "Images.Primary.Medium",
-        "Images.Primary.Large",
-        "ItemInfo.ByLineInfo",
-        "ItemInfo.ContentInfo",
-        "ItemInfo.Title"
-      ],
+      "Resources": resources,
       "PartnerTag": this.partnerTag,
       "PartnerType": "Associates",
-      "Marketplace": this.marketplace,
-      "Operation": "GetItems"
+      "Marketplace": this.marketplace.name,
+      "Operation": PaAPIOperation.GetItems.name
     };
-    final response = await _post('/paapi5/getitems', body);
+    final response =
+        await _post('/paapi5/getitems', body, PaAPIOperation.GetItems);
     return GetItemsResponse.fromJson(response);
   }
 
-  Future<dynamic> _post(String path, Map<String, dynamic> body) async {
-    var headers = _createHeaders(path, 'GetItems', body);
+  Future<SearchItemsResponse> searchItems(
+      String keywords, List<String> resources) async {
+    final body = {
+      "Keywords": keywords,
+      "Resources": resources,
+      "PartnerTag": this.partnerTag,
+      "PartnerType": "Associates",
+      "Marketplace": this.marketplace.name,
+      "Operation": PaAPIOperation.SearchItems.name
+    };
+    final response =
+        await _post('/paapi5/getitems', body, PaAPIOperation.SearchItems);
+    return SearchItemsResponse.fromJson(response);
+  }
+
+  Future<dynamic> _post(
+      String path, Map<String, dynamic> body, PaAPIOperation operation) async {
+    var headers = _createHeaders(path, operation.name, body);
     var url = Uri.parse('https://$host$path');
     var response =
         await http.post(url, headers: headers, body: json.encode(body));
