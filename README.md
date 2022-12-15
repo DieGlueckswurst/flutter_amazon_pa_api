@@ -25,6 +25,24 @@ flutter_amazon_pa_api:
 After adding the package to your `pubspec.yaml` you have to add the package to your code.
 ```dart
 import 'package:flutter_amazon_pa_api/flutter_amazon_pa_api.dart';
+import 'package:flutter_amazon_pa_api/search_items_response.dart';
+import 'package:flutter_amazon_pa_api/paapi_resource.dart';
+
+// list all resources you want to fetch
+var resources = [
+      PaAPIResource.BrowseNodeInfo_BrowseNodes.name,
+      PaAPIResource.Images_Primary_Small.name,
+      PaAPIResource.Images_Primary_Medium.name,
+      PaAPIResource.Images_Primary_Large.name,
+      PaAPIResource.ItemInfo_ByLineInfo.name,
+      PaAPIResource.ItemInfo_ContentInfo.name,
+      PaAPIResource.ItemInfo_Title.name,
+      PaAPIResource.Offers_Listings_Price.name,
+      PaAPIResource.Offers_Listings_SavingBasis.name,
+      PaAPIResource.Offers_Listings_Availability_MaxOrderQuantity.name,
+      PaAPIResource.Offers_Listings_DeliveryInfo_IsAmazonFulfilled.name,
+    ];
+
 PaAPI paAPI = PaAPI(
       accessKey: "<your access key>",
       secretKey: "<your secretkey>",
@@ -33,7 +51,9 @@ PaAPI paAPI = PaAPI(
       marketplace: PaAPIMarketplace.de);
 
 // this will get all Items for this ASIN
-paAPI.getItems(["B00S7N8G2Q"]);
+await paAPI.getItems(["B00S7N8G2Q"], resources);
+// this will get all Items for these keywords
+await paAPI.searchItems("urban classics damen ladies laces dress kleid", resources)
 ```
 
 This project is a starting point for a Dart
