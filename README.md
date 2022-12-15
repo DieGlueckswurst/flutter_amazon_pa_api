@@ -11,7 +11,7 @@ There are at least two ways to use it in your project.
 ```yaml
 flutter_amazon_pa_api:
   git:
-    url: https://github.com/meganii/flutter_amazon_pa_api.git
+    url: https://github.com/fabsi88/flutter_amazon_pa_api.git
     ref: master
 ```
 
