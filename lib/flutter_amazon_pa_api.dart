@@ -105,7 +105,7 @@ class PaAPI {
     String stringToSign = _prepareStringToSign(canonicalURL, currentDateTime);
     String signature = _calculateSignature(stringToSign, currentDateTime);
 
-    if (signature != null) {
+    if (headers['Authorization'] != null) {
       headers['Authorization'] =
           _buildAuthorizationString(signedHeaders, signature, currentDateTime);
       return headers;
